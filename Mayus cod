@@ -1,0 +1,5 @@
+def tiene_mayus(dna_seq):
+    for letra in dna_seq: 
+        if letra.isupper(): 
+            return dna_seq()
+    else: return dna_seq.upper()
