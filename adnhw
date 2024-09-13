@@ -1,0 +1,95 @@
+#El usuario ingresa la candena codificante de ADN 5' - 3' (nontemplate)
+ADN = input(str())
+#ADN = "ATGACGGATCAGCCGCAATACGAATTGGCGTTTAAGGCG"
+
+
+def validate_dnaX (dna_seq):
+
+#El código verifica la cadena codificante de ADN ingresada. Retorna "Valida" si la cadena de ADN contiene unicamente letras ATGC; caso contrario retorna "Inválida".
+  #ADN = input(str())
+  seqm = dna_seq.upper()
+  valid = seqm.count("A") + seqm.count("C") + seqm.count("G") + seqm.count("T")
+  if valid == len (seqm): return "Secuencia de ADN válida"
+  else : return "Secuencia de ADN inválida"
+
+
+#El código verifica la cadena codificante de ADN ingresada 5' - 3'. Retorna "Sin mutación" si la cadena de ADN es exactamente igual a la esperada; caso contrario retorna "Mutación detectada".
+
+def mutacion_dnaX (dna_seq):
+  seqm = dna_seq.upper()
+  valid = "ATGACGGATCAGCCGCAATACGAATTGGCGTTTAAGGCG"
+  if seqm == valid: return "Secuencia de ADN sin mutación"
+  else:
+    for i in range(len(valid)):
+     if i < len(seqm) and seqm[i] != valid[i]:
+       print(f"Mutación detectada en la posición {i + 1} de la cadena de ADN. Nucleótido obtenido: {seqm[i]}. (Nucleótido esperado: {valid[i]})")
+       return
+
+
+#El código crea la cadena complementaria no codificante de ADN 3' - 5' (template) usando la cadena codificante de ADN ingresada 5' - 3'.
+#Los nucleótidos A,T,C,G son reemplazados por sus pares de bases T,A,G,C ; respectivamente
+
+def complimentary_dnaX(dna_seq):
+  complement = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C'}
+  ADNc = ''.join([complement[base] for base in dna_seq if base in complement]) # Only iterate through valid bases
+  print("ADNc:", ADNc)
+  return ADNc
+
+
+#El código crea la cadena de ARN mensajero usando la cadena complementaria de ADN 3' - 5' (template)
+#Los nucleótidos T,A,C,G son reemplazados por sus pares de bases A,U,G,C ; respectivamente
+
+def ARNm_dnaX(dna_seq):
+  complement = {'T': 'A', 'A': 'U', 'C': 'G', 'G': 'C'}
+  ARNm = ''.join([complement[base] for base in dna_seq])
+  print("ARNm:", ARNm)
+  return ARNm
+
+
+#El código crea la cadena de ARN de transferencia usando la cadena de ARN mensajero
+#Los nucleótidos A,U,C,G son reemplazados por sus pares de bases U,A,G,C ; respectivamente
+
+def ARNt_dnaX(dna_seq):
+  complement = {'A': 'U', 'U': 'A', 'C': 'G', 'G': 'C'}
+  ARNt = ''.join([complement[base] for base in dna_seq])
+  print("ARNt:", ARNt)
+  return ARNt
+
+
+#Diccionario de anticodones y respectivos aminoácidos
+
+aminoacidos = {
+    'GCU': 'Alanina', 'GCC': 'Alanina', 'GCA': 'Alanina', 'GCG': 'Alanina',
+    'CGU': 'Arginina', 'CGC': 'Arginina', 'CGA': 'Arginina', 'CGG': 'Arginina', 'AGA': 'Arginina', 'AGG': 'Arginina',
+    'AAU': 'Asparagina', 'AAC': 'Asparagina',
+    'GAU': 'Ácido aspártico', 'GAC': 'Ácido aspártico',
+    'UGU': 'Cisteína', 'UGC': 'Cisteína',
+    'CAA': 'Glutamina', 'CAG': 'Glutamina',
+    'GAA': 'Ácido glutámico', 'GAG': 'Ácido glutámico',
+    'GGU': 'Glicina', 'GGC': 'Glicina', 'GGA': 'Glicina', 'GGG': 'Glicina',
+    'CAU': 'Histidina', 'CAC': 'Histidina',
+    'AUU': 'Isoleucina', 'AUC': 'Isoleucina', 'AUA': 'Isoleucina',
+    'UUA': 'Leucina', 'UUG': 'Leucina', 'CUU': 'Leucina', 'CUC': 'Leucina', 'CUA': 'Leucina', 'CUG': 'Leucina',
+    'AAA': 'Lisina', 'AAG': 'Lisina',
+    'AUG': 'Metionina',
+    'UUU': 'Fenilalanina', 'UUC': 'Fenilalanina',
+    'CCU': 'Prolina', 'CCC': 'Prolina', 'CCA': 'Prolina', 'CCG': 'Prolina',
+    'UCU': 'Serina', 'UCC': 'Serina', 'UCA': 'Serina', 'UCG': 'Serina', 'AGU': 'Serina', 'AGC': 'Serina',
+    'ACU': 'Treonina', 'ACC': 'Treonina', 'ACA': 'Treonina', 'ACG': 'Treonina',
+    'UGG': 'Triptófano',
+    'UAU': 'Tirosina', 'UAC': 'Tirosina',
+    'GUU': 'Valina', 'GUC': 'Valina', 'GUA': 'Valina', 'GUG': 'Valina',
+    'UGA': 'Selenocisteína', # Casos especiales para codones de paro
+    'UAG': 'Pirrolisina'
+}
+
+
+#El código agrupa los nucleótidos de la cadena de ARN de transferencia en grupos de 3 de izquierda a derecha, llamados "anticodones"
+anticodones = [ARNt[i:i+3] for i in range(0, len(ARNt), 3)]
+
+#El código asigna cada triplete de codones a su aminoácido respectivo de acuerdo al diccionario
+amino_acidos = [aminoacidos.get(anticodón, 'Unknown') for anticodón in anticodones]
+
+#El código imprime los anticodones con su respectivo aminoácido
+for anticodón, aa in zip(anticodones, amino_acidos):
+    print(f'{anticodón}: {aa}')
